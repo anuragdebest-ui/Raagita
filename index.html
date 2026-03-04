@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will You Marry Me?</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, #ff758c, #ff7eb3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+    }
+
+    .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    h1 {
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 30px;
+    }
+
+    .buttons {
+        position: relative;
+        height: 200px;
+    }
+
+    button {
+        padding: 12px 25px;
+        font-size: 18px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    #yesBtn {
+        background-color: #28a745;
+        color: white;
+    }
+
+    #yesBtn:hover {
+        transform: scale(1.1);
+    }
+
+    #noBtn {
+        background-color: #dc3545;
+        color: white;
+        position: absolute;
+    }
+
+    .message {
+        display: none;
+        margin-top: 25px;
+        font-size: 24px;
+        color: white;
+        font-weight: bold;
+    }
+
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="container">
+    <h1>Will you marry me Udita? 💖</h1>
+
+    <div class="buttons">
+        <button id="yesBtn">Yes ❤️</button>
+        <button id="noBtn">No 😜</button>
+    </div>
+
+    <div class="message" id="message">
+        💍 Thank you for choosing Anurag, You will not regret 💖
+    </div>
+</div>
+
+<script>
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const message = document.getElementById("message");
+
+// Move No button randomly across full screen
+function moveButton() {
+    const maxX = window.innerWidth - noBtn.offsetWidth;
+    const maxY = window.innerHeight - noBtn.offsetHeight;
+
+    const randomX = Math.floor(Math.random() * maxX);
+    const randomY = Math.floor(Math.random() * maxY);
+
+    noBtn.style.left = randomX + "px";
+    noBtn.style.top = randomY + "px";
+}
+
+noBtn.addEventListener("mouseover", moveButton);
+noBtn.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    moveButton();
+});
+
+setInterval(moveButton, 900);
+
+// Confetti
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+let confetti = [];
+
+function createConfetti() {
+    confetti = [];
+    for (let i = 0; i < 180; i++) {
+        confetti.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height - canvas.height,
+            r: Math.random() * 6 + 2,
+            d: Math.random() * 5 + 2,
+            color: "hsl(" + Math.random() * 360 + ", 100%, 50%)"
+        });
+    }
+}
+
+function drawConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    confetti.forEach(c => {
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+        ctx.fillStyle = c.color;
+        ctx.fill();
+        c.y += c.d;
+        if (c.y > canvas.height) {
+            c.y = -10;
+        }
+    });
+}
+
+function startConfetti() {
+    createConfetti();
+    setInterval(drawConfetti, 20);
+}
+
+// Yes click
+yesBtn.addEventListener("click", function() {
+    message.style.display = "block";
+    startConfetti();
+});
+</script>
+
+</body>
+</html>
